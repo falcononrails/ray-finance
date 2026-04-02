@@ -9,7 +9,7 @@ import { getLatestScore, getAchievements, getMonthlySavings } from "../scoring/i
 import { generateAlerts } from "../alerts/index.js";
 import { runDailySync } from "../daily-sync.js";
 import { startLinkServer } from "../server.js";
-import { heading, progressBar, formatMoney, formatMoneyColored, padColumns, dim, formatDuration, formatError } from "./format.js";
+import { heading, progressBar, formatMoney, formatMoneyColored, padColumns, dim, formatDuration, formatError, renderLogo, institutionName } from "./format.js";
 
 export async function runSync(): Promise<void> {
   const ora = (await import("ora")).default;
@@ -44,15 +44,15 @@ export async function runLink(): Promise<void> {
   spinner.succeed("Bank account linked successfully!");
 }
 
-export function showAccounts(): void {
+export async function showAccounts(): Promise<void> {
   const db = getDb();
   const institutions = db.prepare(
-    `SELECT i.name as institution, i.item_id, i.created_at,
+    `SELECT i.name as institution, i.item_id, i.created_at, i.logo, i.primary_color,
             a.name, a.type, a.subtype, a.mask, a.current_balance, a.currency
      FROM institutions i
      LEFT JOIN accounts a ON a.item_id = i.item_id AND a.hidden = 0
      ORDER BY i.created_at, a.type, a.current_balance DESC`
-  ).all() as { institution: string; item_id: string; created_at: string; name: string | null; type: string | null; subtype: string | null; mask: string | null; current_balance: number | null; currency: string | null }[];
+  ).all() as { institution: string; item_id: string; created_at: string; logo: string | null; primary_color: string | null; name: string | null; type: string | null; subtype: string | null; mask: string | null; current_balance: number | null; currency: string | null }[];
 
   if (institutions.length === 0) {
     console.log("\nNo accounts linked. Run 'ray link' to connect one.\n");
@@ -61,20 +61,41 @@ export function showAccounts(): void {
 
   console.log(`\n${heading("Linked Accounts")}\n`);
 
-  let currentInst = "";
+  // Group rows by institution
+  const groups = new Map<string, typeof institutions>();
   for (const row of institutions) {
-    if (row.institution !== currentInst) {
-      currentInst = row.institution;
-      console.log(chalk.bold(currentInst));
+    const key = row.item_id;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key)!.push(row);
+  }
+
+  // Compute column widths across all accounts for alignment
+  const allAccounts = institutions.filter(r => r.name);
+  const maxName = Math.max(...allAccounts.map(r => `${r.name}${r.mask ? ` ••${r.mask}` : ""}`.length), 0);
+  const maxLabel = Math.max(...allAccounts.map(r => (r.subtype || r.type || "").length), 0);
+
+  for (const [, rows] of groups) {
+    const first = rows[0];
+    // Logo inline with institution name
+    let logoStr = "";
+    if (first.logo) {
+      const logo = await renderLogo(first.logo);
+      if (logo) logoStr = logo.replace(/\n/g, "") + " ";
     }
-    if (!row.name) {
-      console.log(dim("  No accounts found"));
-      continue;
+    console.log(`${logoStr}${institutionName(first.institution, first.primary_color)}`);
+
+    for (const row of rows) {
+      if (!row.name) {
+        console.log(dim("  No accounts found"));
+        continue;
+      }
+      const nameWithMask = `${row.name}${row.mask ? ` ••${row.mask}` : ""}`;
+      const label = row.subtype || row.type || "";
+      const balance = row.current_balance != null ? rawFormatMoney(row.current_balance) : "—";
+      const namePad = nameWithMask.padEnd(maxName + 2);
+      const labelPad = label.padEnd(maxLabel + 2);
+      console.log(`  ${namePad}${dim(labelPad)}${balance}`);
     }
-    const mask = row.mask ? ` ••${row.mask}` : "";
-    const balance = row.current_balance != null ? rawFormatMoney(row.current_balance) : "—";
-    const label = row.subtype || row.type || "";
-    console.log(`  ${row.name}${dim(mask)}  ${dim(label)}  ${balance}`);
   }
   console.log("");
 }

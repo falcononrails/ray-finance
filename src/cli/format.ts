@@ -238,3 +238,27 @@ export function formatResponse(text: string): string {
 export const DISCLAIMER =
   "Ray is an AI tool, not a licensed financial advisor. Output is informational, " +
   "may be inaccurate, and does not constitute financial advice.";
+
+// ─── Institution Logo Rendering ─── //
+
+/** Render a base64-encoded PNG as compact ANSI art (3 rows) */
+export async function renderLogo(base64: string): Promise<string> {
+  try {
+    const terminalImage = (await import("terminal-image")).default;
+    const buffer = Buffer.from(base64, "base64");
+    const rendered = await terminalImage.buffer(buffer, { height: 1, preserveAspectRatio: true });
+    return rendered.trimEnd();
+  } catch {
+    return "";
+  }
+}
+
+/** Color an institution name using its Plaid primary_color */
+export function institutionName(name: string, primaryColor: string | null): string {
+  if (primaryColor) {
+    try {
+      return chalk.hex(primaryColor).bold(name);
+    } catch {}
+  }
+  return chalk.bold(name);
+}

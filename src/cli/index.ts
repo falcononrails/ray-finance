@@ -61,7 +61,7 @@ program
   .action(async () => {
     ensureConfigured();
     const { showAccounts } = await import("./commands.js");
-    showAccounts();
+    await showAccounts();
   });
 
 program
