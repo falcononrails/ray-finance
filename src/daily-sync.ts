@@ -4,13 +4,16 @@ import {
   syncTransactions,
   syncBalances,
   syncInvestments,
+  syncInvestmentTransactions,
   syncLiabilities,
   syncRecurring,
   isProductNotSupported,
+  refreshProducts,
 } from "./plaid/sync.js";
 import { calculateDailyScore, checkAchievements } from "./scoring/index.js";
 import { decryptPlaidToken } from "./db/encryption.js";
 import { config } from "./config.js";
+import { institutionName } from "./cli/format.js";
 
 export interface SyncResult {
   transactionsAdded: number;
@@ -20,13 +23,14 @@ export interface SyncResult {
 /** Run the daily sync for a single database */
 export async function runDailySync(db: Database): Promise<SyncResult> {
   const institutions = db
-    .prepare(`SELECT item_id, access_token, name, products, cursor FROM institutions`)
+    .prepare(`SELECT item_id, access_token, name, products, cursor, primary_color FROM institutions`)
     .all() as {
     item_id: string;
     access_token: string;
     name: string;
     products: string;
     cursor: string | null;
+    primary_color: string | null;
   }[];
 
   if (institutions.length === 0) {
@@ -56,8 +60,16 @@ export async function runDailySync(db: Database): Promise<SyncResult> {
       continue;
     }
 
-    const products: string[] = JSON.parse(inst.products);
-    console.log(`Syncing: ${inst.name} (${products.join(", ")})`);
+    let products: string[] = JSON.parse(inst.products);
+
+    // Refresh products list from Plaid if needed
+    try {
+      products = await refreshProducts(db, inst.item_id, accessToken);
+    } catch {
+      // Non-fatal — use stored products
+    }
+
+    console.log(`Syncing: ${institutionName(inst.name, inst.primary_color)} (${products.join(", ")})`);
 
     try {
       instSynced++;
@@ -81,21 +93,32 @@ export async function runDailySync(db: Database): Promise<SyncResult> {
       }
 
       // Sync investments
-      try {
-        const invResult = await syncInvestments(db, accessToken);
-        console.log(
-          `  Investments: ${invResult.holdings} holdings, ${invResult.securities} securities`
-        );
-      } catch (e) {
-        if (!isProductNotSupported(e)) console.error(`  Investments error: ${(e as Error).message}`);
+      if (products.includes("investments")) {
+        try {
+          const invResult = await syncInvestments(db, accessToken);
+          console.log(
+            `  Investments: ${invResult.holdings} holdings, ${invResult.securities} securities`
+          );
+        } catch (e) {
+          if (!isProductNotSupported(e)) console.error(`  Investments error: ${(e as Error).message}`);
+        }
+
+        try {
+          const invTxResult = await syncInvestmentTransactions(db, accessToken);
+          console.log(`  Investment transactions: ${invTxResult.transactions}`);
+        } catch (e) {
+          if (!isProductNotSupported(e)) console.error(`  Investment transactions error: ${(e as Error).message}`);
+        }
       }
 
       // Sync liabilities
-      try {
-        await syncLiabilities(db, accessToken);
-        console.log(`  Liabilities: synced`);
-      } catch (e) {
-        if (!isProductNotSupported(e)) console.error(`  Liabilities error: ${(e as Error).message}`);
+      if (products.includes("liabilities")) {
+        try {
+          await syncLiabilities(db, accessToken);
+          console.log(`  Liabilities: synced`);
+        } catch (e) {
+          if (!isProductNotSupported(e)) console.error(`  Liabilities error: ${(e as Error).message}`);
+        }
       }
 
       // Sync recurring transaction streams

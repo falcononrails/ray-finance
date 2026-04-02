@@ -191,6 +191,22 @@ export function migrate(db: Database.Database): void {
       created_at TEXT DEFAULT (datetime('now'))
     );
 
+    CREATE TABLE IF NOT EXISTS investment_transactions (
+      investment_transaction_id TEXT PRIMARY KEY,
+      account_id TEXT NOT NULL REFERENCES accounts(account_id),
+      security_id TEXT,
+      date TEXT NOT NULL,
+      name TEXT NOT NULL,
+      quantity REAL,
+      amount REAL NOT NULL,
+      price REAL,
+      fees REAL,
+      type TEXT,
+      subtype TEXT,
+      iso_currency_code TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
     CREATE TABLE IF NOT EXISTS ai_audit_log (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       tool_name TEXT NOT NULL,
@@ -201,10 +217,51 @@ export function migrate(db: Database.Database): void {
     );
   `);
 
+  // Migrate: add logo and primary_color to institutions
+  const instCols = db.prepare(`PRAGMA table_info(institutions)`).all() as { name: string }[];
+  if (!instCols.some(c => c.name === "logo")) {
+    db.exec(`ALTER TABLE institutions ADD COLUMN logo TEXT`);
+    db.exec(`ALTER TABLE institutions ADD COLUMN primary_color TEXT`);
+  }
+
   // Migrate: rename goals.deadline -> target_date for existing databases
   const goalCols = db.prepare(`PRAGMA table_info(goals)`).all() as { name: string }[];
   if (goalCols.some(c => c.name === "deadline") && !goalCols.some(c => c.name === "target_date")) {
     db.exec(`ALTER TABLE goals RENAME COLUMN deadline TO target_date`);
+  }
+
+  // Migrate: add balance_limit to accounts
+  const acctCols = db.prepare(`PRAGMA table_info(accounts)`).all() as { name: string }[];
+  if (!acctCols.some(c => c.name === "balance_limit")) {
+    db.exec(`ALTER TABLE accounts ADD COLUMN balance_limit REAL`);
+  }
+
+  // Migrate: add vesting columns to holdings
+  const holdCols = db.prepare(`PRAGMA table_info(holdings)`).all() as { name: string }[];
+  if (!holdCols.some(c => c.name === "vested_value")) {
+    db.exec(`ALTER TABLE holdings ADD COLUMN vested_value REAL`);
+    db.exec(`ALTER TABLE holdings ADD COLUMN vested_quantity REAL`);
+  }
+
+  // Migrate: expand liabilities with type-specific columns
+  const liabCols = db.prepare(`PRAGMA table_info(liabilities)`).all() as { name: string }[];
+  if (!liabCols.some(c => c.name === "last_payment_amount")) {
+    db.exec(`ALTER TABLE liabilities ADD COLUMN last_payment_amount REAL`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN last_payment_date TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN credit_limit REAL`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN last_statement_issue_date TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN is_overdue INTEGER`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN apr_type TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN maturity_date TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN loan_type TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN property_address TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN escrow_balance REAL`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN loan_status TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN loan_name TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN repayment_plan TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN expected_payoff_date TEXT`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN ytd_interest_paid REAL`);
+    db.exec(`ALTER TABLE liabilities ADD COLUMN ytd_principal_paid REAL`);
   }
 
   // Migrate: rebuild recurring table to use Plaid stream schema

@@ -3,7 +3,7 @@ import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
 import { randomUUID } from "crypto";
 import { createLinkToken, exchangeToken } from "./plaid/link.js";
-import { syncBalances, syncTransactions, syncInvestments, syncLiabilities, syncRecurring, isProductNotSupported } from "./plaid/sync.js";
+import { syncBalances, syncTransactions, syncInvestments, syncInvestmentTransactions, syncLiabilities, syncRecurring, isProductNotSupported } from "./plaid/sync.js";
 import { plaidClient } from "./plaid/client.js";
 import { CountryCode } from "plaid";
 import { encryptPlaidToken } from "./db/encryption.js";
@@ -114,19 +114,32 @@ export function startLinkServer(): LinkResult {
       }
       const encryptedToken = encryptPlaidToken(accessToken, config.plaidTokenSecret);
 
+      // Fetch actual enabled products from Plaid
+      const itemResp = await plaidClient.itemGet({ access_token: accessToken });
+      const products: string[] = (itemResp.data.item.products || []) as string[];
+
       db.prepare(
         `INSERT INTO institutions (item_id, access_token, name, products)
          VALUES (?, ?, ?, ?)
-         ON CONFLICT(item_id) DO UPDATE SET access_token = excluded.access_token`
-      ).run(itemId, encryptedToken, institution_name || "Account", JSON.stringify(["transactions", "investments", "liabilities"]));
+         ON CONFLICT(item_id) DO UPDATE SET access_token = excluded.access_token, products = excluded.products`
+      ).run(itemId, encryptedToken, institution_name || "Account", JSON.stringify(products));
 
       // Trigger initial sync (Plaid may not have data ready immediately)
       const runSync = async () => {
         await syncBalances(db, accessToken);
-        await syncTransactions(db, itemId, accessToken, null);
-        try { await syncInvestments(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
-        try { await syncLiabilities(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
-        try { await syncRecurring(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
+        if (products.includes("transactions")) {
+          await syncTransactions(db, itemId, accessToken, null);
+        }
+        if (products.includes("investments")) {
+          try { await syncInvestments(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
+          try { await syncInvestmentTransactions(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
+        }
+        if (products.includes("liabilities")) {
+          try { await syncLiabilities(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
+        }
+        if (products.includes("transactions")) {
+          try { await syncRecurring(db, accessToken); } catch (e) { if (!isProductNotSupported(e)) throw e; }
+        }
       };
 
       try {
@@ -153,7 +166,7 @@ export function startLinkServer(): LinkResult {
         }, 30_000);
       }
 
-      // Fetch institution logo
+      // Fetch and store institution logo + brand color
       let institutionLogo: string | null = null;
       if (req.body.institution_id) {
         try {
@@ -163,6 +176,9 @@ export function startLinkServer(): LinkResult {
             options: { include_optional_metadata: true },
           });
           institutionLogo = data.institution.logo || null;
+          const primaryColor = data.institution.primary_color || null;
+          db.prepare(`UPDATE institutions SET logo = ?, primary_color = ? WHERE item_id = ?`)
+            .run(institutionLogo, primaryColor, itemId);
         } catch {}
       }
 

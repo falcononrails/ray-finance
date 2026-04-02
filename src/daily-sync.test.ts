@@ -8,7 +8,14 @@ vi.mock("./plaid/sync.js", () => ({
   syncBalances: vi.fn().mockResolvedValue(3),
   syncTransactions: vi.fn().mockResolvedValue({ added: 5, modified: 0, removed: 0 }),
   syncInvestments: vi.fn().mockResolvedValue({ holdings: 2, securities: 2 }),
+  syncInvestmentTransactions: vi.fn().mockResolvedValue({ transactions: 5 }),
   syncLiabilities: vi.fn().mockResolvedValue(undefined),
+  syncRecurring: vi.fn().mockResolvedValue({ outflows: 3, inflows: 1 }),
+  refreshProducts: vi.fn().mockImplementation((_db: any, _itemId: any, _token: any) => {
+    // Return whatever products are stored in the DB for this item
+    return Promise.resolve(["transactions"]);
+  }),
+  isProductNotSupported: vi.fn().mockReturnValue(false),
 }));
 
 // Mock scoring
