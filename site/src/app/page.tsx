@@ -50,6 +50,7 @@ export default function Home() {
       <Reveal><Story /></Reveal>
       <HowItWorks />
       <Reveal><Privacy /></Reveal>
+      <Reveal><SupportedBanks /></Reveal>
       <Reveal><Context /></Reveal>
       <Reveal><Features /></Reveal>
       <Reveal><Pricing /></Reveal>
@@ -62,7 +63,7 @@ export default function Home() {
 /* ─── Hero ─── */
 function Hero() {
   return (
-    <section className="relative overflow-hidden pt-32 pb-12">
+    <section className="relative overflow-hidden pt-24 pb-12 sm:pt-32">
       <div className="mx-auto max-w-5xl px-6 text-center">
         <h1 className="animate-fade-up text-6xl leading-[1.05] font-black tracking-tight text-stone-950 sm:text-7xl lg:text-8xl">
           Talk to your&nbsp;money
@@ -95,7 +96,7 @@ function Hero() {
 function Terminal() {
   return (
     <section className="px-6 -mt-5 py-16">
-      <div className="mx-auto max-w-3xl">
+      <div className="mx-auto max-w-4xl">
         <div className="overflow-hidden rounded-2xl border border-sand-200 bg-stone-950 shadow-2xl shadow-stone-900/10">
           {/* Title bar */}
           <div className="flex items-center gap-2 border-b border-stone-800 px-4 py-3">
@@ -107,18 +108,36 @@ function Terminal() {
             </span>
           </div>
           {/* Content */}
-          <div className="overflow-x-auto p-5 font-mono text-[11px] leading-[1.7] sm:p-8 sm:text-[13px] h-[400px] sm:h-[360px]">
-            <p className="text-stone-500">tuesday, apr 1</p>
+          <div className="overflow-x-auto overflow-y-auto scrollbar-none p-5 font-mono text-[11px] leading-[1.7] sm:p-8 sm:text-[13px] h-[520px] sm:h-[480px]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+            <p className="text-stone-500">saturday, apr 4</p>
             <Blank />
             <p className="text-stone-300">
-              <D>net worth</D>{"  "}<W>$45,230</W>{" "}<G>+$4,244</G>
+              <D>net worth</D>{"  "}<W>$255,870</W>{" "}<G>+$133</G>
             </p>
             <p className="text-stone-500">
-              {"  "}checking $4,521{"  "}<D>&middot;</D>{"  "}savings $18,200{"  "}<D>&middot;</D>{"  "}brokerage $23,996{"  "}<D>&middot;</D>{"  "}credit card <R>-$1,487</R>
+              {"  "}gold card <R>-$1,830</R>{"  "}<D>&middot;</D>{"  "}chase savings $12,500{"  "}<D>&middot;</D>{"  "}total checking $4,200{"  "}<D>&middot;</D>{"  "}401(k) $67,000{"  "}<D>&middot;</D>{"  "}individual $34,000
             </p>
             <Blank />
             <p className="text-stone-300">
-              <D>score</D>{"      "}<G>72</G><D>/100</D>{"  "}<D>&middot;  5d no dining  &middot;  3d on pace</D>
+              <D>spending</D>{"  "}<W>$3,608</W> this month <D>&middot;</D> <Y>$1,728 more</Y> than this point last month
+            </p>
+            <p className="text-stone-500">
+              {"  "}shopping <Y>+$850</Y>{"  "}<D>&middot;</D>{"  "}food &amp; drink <D>+$396</D>{"  "}<D>&middot;</D>{"  "}services <D>+$145</D>{"  "}<D>&middot;</D>{"  "}personal care <D>+$130</D>
+            </p>
+            <Blank />
+            <p className="text-stone-300">
+              {"  "}<Y>{"████████████"}</Y><D>{"░░░░"}</D>{"  "}shopping 75%
+            </p>
+            <Blank />
+            <p className="text-stone-300">
+              {"  "}<G>{"██████"}</G><D>{"░░░░░░░░░░"}</D>{"  "}Emergency Fund $6,200/$15,000 <D>&middot;</D> need $1,100/mo
+            </p>
+            <p className="text-stone-300">
+              {"  "}<G>{"█████████"}</G><D>{"░░░░░░░"}</D>{"  "}Japan Vacation $2,800/$5,000 <D>&middot;</D> need $440/mo
+            </p>
+            <Blank />
+            <p className="text-stone-300">
+              <D>score</D>{"      "}<G>76</G><D>/100</D>{"  "}<D>&middot;  3d no dining</D>
             </p>
             <Blank />
             <div className="border-t border-stone-800 my-3" />
@@ -264,6 +283,63 @@ function HowItWorks() {
             </div>
           ))}
         </div>
+      </div>
+    </section>
+  );
+}
+
+/* ─── Supported Banks ─── */
+const banks: { name: string; file: string; className?: string }[] = [
+  { name: "Chase", file: "chase" },
+  { name: "Bank of America", file: "bankofamerica" },
+  { name: "Wells Fargo", file: "wellsfargo" },
+  { name: "Capital One", file: "capitalone" },
+  { name: "American Express", file: "americanexpress" },
+  { name: "Fidelity", file: "fidelity" },
+  { name: "Charles Schwab", file: "schwab" },
+  { name: "Robinhood", file: "robinhood" },
+  { name: "Vanguard", file: "vanguard" },
+  { name: "SoFi", file: "sofi" },
+  { name: "Ally", file: "ally" },
+  { name: "PayPal", file: "paypal" },
+  { name: "Venmo", file: "venmo", className: "h-10" },
+  { name: "Discover", file: "discover", className: "h-10" },
+];
+
+function SupportedBanks() {
+  return (
+    <section className="py-24 sm:py-32">
+      <div className="mx-auto max-w-5xl px-6">
+        <p className="font-mono text-xs tracking-widest text-stone-400 uppercase">
+          Integrations
+        </p>
+        <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-stone-950 sm:text-4xl">
+          Works with your bank, brokerage, and lender.
+        </h2>
+        <p className="mt-4 max-w-2xl text-lg text-stone-500">
+          Ray connects to 12,000+ financial institutions through Plaid — from
+          major banks to local credit unions.
+        </p>
+
+        <div className="mt-12 grid grid-cols-3 gap-6 sm:grid-cols-4 lg:grid-cols-7">
+          {banks.map((bank) => (
+            <div
+              key={bank.file}
+              className="flex items-center justify-center rounded-lg border border-sand-200 bg-white p-4"
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/banks/${bank.file}.svg`}
+                alt={bank.name}
+                className={`${bank.className ?? "h-6"} w-auto`}
+              />
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-6 text-center text-sm text-stone-400">
+          And 12,000+ more institutions supported via Plaid
+        </p>
       </div>
     </section>
   );

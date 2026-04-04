@@ -76,6 +76,11 @@
   transform: translateY(0);
 }
 
+/* Hide scrollbars in terminal mockup */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Respect reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .animate-fade-up,
