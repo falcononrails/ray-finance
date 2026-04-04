@@ -23,6 +23,8 @@ Open Ray and it shows your net worth, spending vs last month, budget pacing, and
 ## Features
 
 - **It already knows** — Every conversation starts with a real-time financial briefing. Net worth, spending velocity, budget alerts, goal pace, upcoming bills, and your daily score. No "let me look that up."
+- **Persistent context** — Ray maintains a financial profile that evolves with you: income, goals, strategy, key decisions, and open items. It updates this context as your situation changes, so every conversation picks up where the last one left off.
+- **Long-term memory** — Important details from conversations are saved as memories. Mention you're saving for a house or switching jobs and Ray remembers — without you repeating yourself.
 - **Bank sync via Plaid** — Connect checking, savings, credit cards, investments, and loans
 - **Encrypted local database** — All data stays on your machine in an AES-256 encrypted SQLite database
 - **Daily scoring** — A 0-100 behavior score with streaks and 14 unlockable achievements. No restaurants for a week? That's Kitchen Hero. Five zero-spend days? Monk Mode.
