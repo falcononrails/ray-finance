@@ -108,7 +108,7 @@ function Terminal() {
             </span>
           </div>
           {/* Content */}
-          <div className="overflow-x-auto overflow-y-auto scrollbar-none p-5 font-mono text-[11px] leading-[1.7] sm:p-8 sm:text-[13px] h-[520px] sm:h-[480px]" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
+          <div className="overflow-hidden p-5 font-mono text-[11px] leading-[1.7] sm:p-8 sm:text-[13px] h-[620px] sm:h-[560px]">
             <p className="text-stone-500">saturday, apr 4</p>
             <Blank />
             <p className="text-stone-300">
