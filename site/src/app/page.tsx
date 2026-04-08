@@ -1,5 +1,5 @@
 import { CopyCommand } from "./copy-command";
-import { RotatingPrompt } from "./rotating-prompt";
+import { TerminalDemo } from "./terminal-demo";
 import { PIIScramble } from "./pii-scramble";
 import { Reveal } from "./reveal";
 import { Nav } from "@/components/nav";
@@ -95,59 +95,10 @@ function Hero() {
 /* ─── Terminal Demo ─── */
 function Terminal() {
   return (
-    <section className="px-6 -mt-5 py-16">
+    <section className="px-6 -mt-9 py-16">
       <div className="mx-auto max-w-4xl">
         <div className="overflow-hidden rounded-2xl border border-sand-200 bg-stone-950 shadow-2xl shadow-stone-900/10">
-          {/* Title bar */}
-          <div className="flex items-center gap-2 border-b border-stone-800 px-4 py-3">
-            <div className="h-3 w-3 rounded-full bg-stone-700" />
-            <div className="h-3 w-3 rounded-full bg-stone-700" />
-            <div className="h-3 w-3 rounded-full bg-stone-700" />
-            <span className="ml-2 font-mono text-xs text-stone-500">
-              ray
-            </span>
-          </div>
-          {/* Content */}
-          <div className="overflow-hidden p-5 font-mono text-[11px] leading-[1.7] sm:p-8 sm:text-[13px] h-[620px] sm:h-[560px]">
-            <p className="text-stone-500">saturday, apr 4</p>
-            <Blank />
-            <p className="text-stone-300">
-              <D>net worth</D>{"  "}<W>$255,870</W>{" "}<G>+$133</G>
-            </p>
-            <p className="text-stone-500">
-              {"  "}gold card <R>-$1,830</R>{"  "}<D>&middot;</D>{"  "}chase savings $12,500{"  "}<D>&middot;</D>{"  "}total checking $4,200{"  "}<D>&middot;</D>{"  "}401(k) $67,000{"  "}<D>&middot;</D>{"  "}individual $34,000
-            </p>
-            <Blank />
-            <p className="text-stone-300">
-              <D>spending</D>{"  "}<W>$3,608</W> this month <D>&middot;</D> <Y>$1,728 more</Y> than this point last month
-            </p>
-            <p className="text-stone-500">
-              {"  "}shopping <Y>+$850</Y>{"  "}<D>&middot;</D>{"  "}food &amp; drink <D>+$396</D>{"  "}<D>&middot;</D>{"  "}services <D>+$145</D>{"  "}<D>&middot;</D>{"  "}personal care <D>+$130</D>
-            </p>
-            <Blank />
-            <p className="text-stone-300">
-              {"  "}<Y>{"████████████"}</Y><D>{"░░░░"}</D>{"  "}shopping 75%
-            </p>
-            <Blank />
-            <p className="text-stone-300">
-              {"  "}<G>{"██████"}</G><D>{"░░░░░░░░░░"}</D>{"  "}Emergency Fund $6,200/$15,000 <D>&middot;</D> need $1,100/mo
-            </p>
-            <p className="text-stone-300">
-              {"  "}<G>{"█████████"}</G><D>{"░░░░░░░"}</D>{"  "}Japan Vacation $2,800/$5,000 <D>&middot;</D> need $440/mo
-            </p>
-            <Blank />
-            <p className="text-stone-300">
-              <D>score</D>{"      "}<G>76</G><D>/100</D>{"  "}<D>&middot;  3d no dining</D>
-            </p>
-            <Blank />
-            <div className="border-t border-stone-800 my-3" />
-            {/* ── Conversation ── */}
-            <RotatingPrompt />
-          </div>
-          {/* Status bar */}
-          <div className="border-t border-stone-800 px-5 py-2.5 font-mono text-[10px] text-stone-600 sm:px-8 sm:text-[11px]">
-            ray{"  "}<D>&middot;</D>{"  "}synced 1h ago{"  "}<D>&middot;</D>{"  "}try: compare this month to last month{"  "}<D>&middot;</D>{"  "}ctrl+c to exit
-          </div>
+          <TerminalDemo />
         </div>
       </div>
     </section>
@@ -787,71 +738,6 @@ function CTA() {
   );
 }
 
-
-/* ─── Helpers ─── */
-function Line({
-  children,
-  dim,
-  prompt,
-}: {
-  children: React.ReactNode;
-  dim?: boolean;
-  prompt?: boolean;
-}) {
-  return (
-    <p className={dim ? "text-stone-500" : "text-stone-300"}>
-      {prompt && <span className="text-stone-500" aria-hidden="true">{"❯ "}</span>}
-      {children}
-    </p>
-  );
-}
-
-function Blank() {
-  return <p className="h-5" />;
-}
-
-function G({ children }: { children: React.ReactNode }) {
-  return <span className="text-lime-400">{children}</span>;
-}
-
-function R({ children }: { children: React.ReactNode }) {
-  return <span className="text-red-400">{children}</span>;
-}
-
-function Y({ children }: { children: React.ReactNode }) {
-  return <span className="text-amber-400">{children}</span>;
-}
-
-function W({ children }: { children: React.ReactNode }) {
-  return <span className="text-white">{children}</span>;
-}
-
-function D({ children }: { children: React.ReactNode }) {
-  return <span className="text-stone-500">{children}</span>;
-}
-
-function CSSBar({ pct, color }: { pct: number; color: "lime" | "amber" }) {
-  const total = 8;
-  const filled = Math.round((Math.min(pct, 100) / 100) * total);
-  const fillColor = color === "amber" ? "#fbbf24" : "#87da26";
-  const emptyColor = "#292524";
-  // Each block is a 6x10 rect with 1px gaps, mimicking terminal block chars
-  return (
-    <svg width={total * 7} height={10} className="inline-block align-middle" aria-hidden="true">
-      {Array.from({ length: total }, (_, i) => (
-        <rect
-          key={i}
-          x={i * 7}
-          y={0}
-          width={6}
-          height={10}
-          rx={1}
-          fill={i < filled ? fillColor : emptyColor}
-        />
-      ))}
-    </svg>
-  );
-}
 
 function GitHubIcon() {
   return (
