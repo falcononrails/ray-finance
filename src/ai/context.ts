@@ -1,27 +1,33 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync, chmodSync } from "fs";
-import { resolve } from "path";
-import { homedir } from "os";
+import { resolve, dirname, basename } from "path";
+import { config } from "../config.js";
 
-const CONTEXT_PATH = resolve(homedir(), ".ray", "context.md");
+function getContextFilePath(): string {
+  const dbFile = basename(config.dbPath, ".db");
+  const contextFile = dbFile === "finance" ? "context.md" : `context-${dbFile}.md`;
+  return resolve(dirname(config.dbPath), "..", contextFile);
+}
 
 export function getContextPath(): string {
-  return CONTEXT_PATH;
+  return getContextFilePath();
 }
 
 export function readContext(): string {
-  if (!existsSync(CONTEXT_PATH)) return "";
+  const contextPath = getContextFilePath();
+  if (!existsSync(contextPath)) return "";
   try {
-    return readFileSync(CONTEXT_PATH, "utf-8");
+    return readFileSync(contextPath, "utf-8");
   } catch {
     return "";
   }
 }
 
 export function writeContext(content: string): void {
-  const dir = resolve(homedir(), ".ray");
+  const contextPath = getContextFilePath();
+  const dir = dirname(contextPath);
   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-  writeFileSync(CONTEXT_PATH, content, { encoding: "utf-8", mode: 0o600 });
-  try { chmodSync(CONTEXT_PATH, 0o600); } catch {}
+  writeFileSync(contextPath, content, { encoding: "utf-8", mode: 0o600 });
+  try { chmodSync(contextPath, 0o600); } catch {}
 }
 
 export function isContextEmpty(): boolean {
@@ -65,7 +71,8 @@ export function replaceContextSection(section: string, content: string): void {
 }
 
 export function createContextTemplate(userName: string): void {
-  if (existsSync(CONTEXT_PATH)) return; // don't overwrite existing
+  const contextPath = getContextFilePath();
+  if (existsSync(contextPath)) return; // don't overwrite existing
 
   const template = `# Financial Context for ${userName}
 
