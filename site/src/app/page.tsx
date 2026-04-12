@@ -210,22 +210,22 @@ function SocialProof() {
           </svg>
           <span className="text-sm font-semibold text-stone-700">Open Source</span>
         </div>
-        <p className="text-xs text-stone-400">MIT Licensed · Fully Auditable</p>
+        <p className="whitespace-nowrap text-xs text-stone-400">MIT Licensed · Fully Auditable</p>
       </a>
 
-      <div className="h-8 w-px bg-stone-200" />
+      <div className="hidden h-8 w-px bg-stone-200 sm:block" />
 
-      {/* Product Hunt */}
+      {/* Product Hunt — hidden on mobile */}
       <a
         href="https://www.producthunt.com/products/ray-7?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-ray-7"
         target="_blank"
         rel="noopener noreferrer"
-        className="transition-opacity hover:opacity-80"
+        className="hidden transition-opacity hover:opacity-80 sm:block"
       >
         <img
           alt="Ray - Your personal CFO in the terminal | Product Hunt"
-          width="250"
-          height="54"
+          width="180"
+          height="39"
           src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1121525&theme=light&t=1776009822210"
         />
       </a>
