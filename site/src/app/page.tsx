@@ -1,4 +1,5 @@
 import { CopyCommand } from "./copy-command";
+import { VideoModal } from "./video-modal";
 import { TerminalDemo } from "./terminal-demo";
 import { PIIScramble } from "./pii-scramble";
 import { Reveal } from "./reveal";
@@ -160,11 +161,19 @@ function Hero() {
         <p className="animate-fade-up-delay-1 mx-auto mt-5 max-w-2xl text-lg leading-relaxed text-stone-500 sm:text-xl">
           Ray is an AI financial advisor that connects to your bank, understands your full picture, and gives real advice&mdash;all local on your machine.
         </p>
-        <div className="animate-fade-up-delay-2 mt-10 flex flex-col items-center gap-3">
+        <div className="animate-fade-up-delay-2 mt-10 flex flex-col items-center gap-4">
           <CopyCommand
             command="npm install -g ray-finance"
             className="rounded-lg bg-stone-900 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-stone-900/20 transition-colors hover:bg-stone-800 [&>span:first-child]:text-stone-500"
           />
+          <VideoModal youtubeId="-ULzglbZmPg">
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-stone-500 transition-colors hover:text-stone-700">
+              <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+              </svg>
+              Watch demo
+            </span>
+          </VideoModal>
         </div>
         <NpmDownloads />
       </div>
@@ -202,6 +211,23 @@ function SocialProof() {
           <span className="text-sm font-semibold text-stone-700">Open Source</span>
         </div>
         <p className="text-xs text-stone-400">MIT Licensed · Fully Auditable</p>
+      </a>
+
+      <div className="h-8 w-px bg-stone-200" />
+
+      {/* Product Hunt */}
+      <a
+        href="https://www.producthunt.com/products/ray-7?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-ray-7"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="transition-opacity hover:opacity-80"
+      >
+        <img
+          alt="Ray - Your personal CFO in the terminal | Product Hunt"
+          width="250"
+          height="54"
+          src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1121525&theme=light&t=1776009822210"
+        />
       </a>
     </div>
   );
