@@ -110,17 +110,24 @@ Run `ray --help` to see all available commands.
 | `ray --demo <cmd>` | Run any command against demo data |
 | `ray setup` | Configure API keys and preferences |
 | `ray link` | Connect a new bank account |
+| `ray add` | Add a manual account (home, car, crypto, etc.) |
+| `ray remove` | Remove a manual account |
 | `ray sync` | Pull latest transactions and balances |
 | `ray status` | Quick financial dashboard |
+| `ray accounts` | Linked accounts with balances |
 | `ray transactions` | Recent transactions (filterable by category, merchant) |
 | `ray spending [period]` | Spending breakdown by category |
 | `ray budgets` | Budget status and overruns |
 | `ray goals` | Financial goal progress |
+| `ray bills` | Upcoming bills |
+| `ray recap [period]` | Monthly spending recap |
 | `ray score` | Daily score, streaks, and achievements |
 | `ray alerts` | Active financial alerts |
 | `ray export [path]` | Export data to a backup file |
 | `ray import <path>` | Restore from a backup file |
 | `ray billing` | Manage your Ray subscription (managed mode only) |
+| `ray update` | Update Ray to the latest version |
+| `ray doctor` | Check system health |
 
 ## How It Works
 
