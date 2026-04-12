@@ -44,6 +44,7 @@ const columns = [
   {
     title: "Resources",
     links: [
+      { label: "Beginner's Guide", href: "/guides/beginners" },
       { label: "Setup Guides", href: "/guides" },
       { label: "Get Anthropic Key", href: "/guides/get-anthropic-api-key" },
       { label: "Get Plaid Credentials", href: "/guides/get-plaid-credentials" },
