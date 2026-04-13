@@ -111,7 +111,7 @@ Run `ray --help` to see all available commands.
 | `ray setup` | Configure API keys and preferences |
 | `ray link` | Connect a new bank account |
 | `ray add` | Add a manual account (home, car, crypto, etc.) |
-| `ray remove` | Remove a manual account |
+| `ray remove` | Remove a linked bank or manual account |
 | `ray sync` | Pull latest transactions and balances |
 | `ray status` | Quick financial dashboard |
 | `ray accounts` | Linked accounts with balances |
@@ -196,6 +196,10 @@ RAY_API_KEY=           # Ray API key (managed mode, replaces the above)
 - [ ] Daily digest email — morning summary of your finances
 
 Have an idea? [Open a PR](https://github.com/cdinnison/ray-finance/pulls).
+
+## Support
+
+Questions, feedback, or need help getting set up? Email [clark@rayfinance.app](mailto:clark@rayfinance.app) or [open an issue](https://github.com/cdinnison/ray-finance/issues).
 
 ## Contributing
 
