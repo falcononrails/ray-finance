@@ -10,7 +10,7 @@ const jsonLd = {
   "@type": "SoftwareApplication",
   name: "Ray Finance",
   description:
-    "An open-source CLI that connects to your bank and gives you AI-powered financial advice — all running locally on your machine.",
+    "An open-source AI financial advisor that learns your full situation and gives personalized advice from your real bank data — running locally on your machine.",
   applicationCategory: "FinanceApplication",
   applicationSubCategory: "AI Financial Advisor",
   operatingSystem: "macOS, Linux, Windows",
@@ -48,7 +48,7 @@ const faqItems = [
   {
     question: "What does Ray do?",
     answer:
-      "Ray is an AI financial advisor that connects to your bank accounts via Plaid and gives personalized advice based on your real transactions, balances, and goals. Instead of showing you dashboards and charts, Ray answers questions like \"can I afford this trip?\" and \"should I pay off debt or invest?\" using your actual financial data. It also learns and remembers your situation over time — your goals, your family, your career, your priorities — so the advice gets better the more you use it.",
+      "Ray is an AI financial advisor that learns your full situation — your family, income, goals, strategy, and key decisions — and keeps a persistent profile that evolves over time. It connects to your bank via Plaid and answers questions like \"can I afford this trip?\" and \"should I pay off debt or invest?\" using your actual financial data. Instead of generic advice, Ray gives answers grounded in your specific context. It gets smarter the more you use it.",
   },
   {
     question: "How does Ray keep my financial data private?",
@@ -112,12 +112,12 @@ export default function Home() {
       <Hero />
       <SocialProof />
       <Terminal />
+      <Reveal><Context /></Reveal>
       <Reveal><Story /></Reveal>
       <HowItWorks />
+      <Reveal><Features /></Reveal>
       <Reveal><Privacy /></Reveal>
       <Reveal><SupportedBanks /></Reveal>
-      <Reveal><Context /></Reveal>
-      <Reveal><Features /></Reveal>
       <Reveal><Pricing /></Reveal>
       <Reveal><FAQ /></Reveal>
       <CTA />
@@ -253,7 +253,7 @@ function Story() {
     <section id="story" className="py-24 sm:py-32">
       <div className="mx-auto max-w-3xl px-6">
         <h2 className="text-center text-3xl font-extrabold tracking-tight text-stone-950 sm:text-4xl">
-          You&rsquo;ve tried everything else.
+          You&rsquo;ve tried<br className="sm:hidden" /> everything&nbsp;else.
         </h2>
 
         <div className="mt-16 space-y-16">
@@ -278,7 +278,7 @@ function Story() {
               what to do next."
           />
 
-          <div className="pl-8">
+          <div>
             <p className="flex items-center gap-2 font-mono text-sm tracking-wide text-stone-400 uppercase">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="m4 17 6-6-6-6M12 19h8" /></svg>
               Then there&rsquo;s Ray
@@ -287,12 +287,12 @@ function Story() {
               The advisor you&rsquo;d hire if they weren&rsquo;t $200/hour.
             </h3>
             <p className="mt-4 text-lg leading-relaxed text-stone-500">
-              Ray connects directly to your bank accounts. It sees every
-              transaction, every balance, every debt. When you ask &ldquo;can
-              I afford this?&rdquo; it doesn&rsquo;t guess&nbsp;&mdash; it
-              queries your actual data, runs the math, and gives you a real
-              answer. It remembers your goals, tracks your progress, and
-              proactively flags problems before they become emergencies.
+              Ray remembers your goals, your family, your strategy, and
+              every decision you&rsquo;ve made together. When you ask
+              &ldquo;can I afford this?&rdquo; it doesn&rsquo;t give generic
+              advice&nbsp;&mdash; it factors in your real situation, connects
+              to your bank, queries your actual data, and gives you a real
+              answer. Every conversation builds on the last.
             </p>
           </div>
         </div>
@@ -313,7 +313,7 @@ function StoryBlock({
   icon?: React.ReactNode;
 }) {
   return (
-    <div className="pl-8">
+    <div>
       <p className="flex items-center gap-2 font-mono text-sm tracking-wide text-stone-400 uppercase">
         {icon}
         {label}
@@ -401,8 +401,8 @@ const banks: { name: string; file: string; className?: string }[] = [
   { name: "SoFi", file: "sofi" },
   { name: "Ally", file: "ally" },
   { name: "PayPal", file: "paypal" },
-  { name: "Venmo", file: "venmo", className: "h-10" },
-  { name: "Discover", file: "discover", className: "h-10" },
+  { name: "Venmo", file: "venmo" },
+  { name: "Discover", file: "discover" },
 ];
 
 function SupportedBanks() {
@@ -461,12 +461,14 @@ function Context() {
               What makes Ray different
             </p>
             <h2 className="mt-4 text-3xl font-extrabold tracking-tight text-stone-950 sm:text-4xl">
-              It knows your whole situation, not just your transactions.
+              Tell Ray once. It remembers&nbsp;everything.
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-stone-500">
-              Ray builds a profile of your life over time — your goals, your
-              family, your career, your priorities. Every conversation makes it
-              smarter. The advice you get on day 30 is nothing like day one.
+              Ray keeps a persistent profile of your life&nbsp;&mdash; family,
+              income, goals, strategy, and key decisions. When your situation
+              changes, Ray updates it automatically. The advice you get on
+              day&nbsp;30 is nothing like day&nbsp;one, because Ray knows what
+              happened on days&nbsp;1&nbsp;through&nbsp;29.
             </p>
           </div>
 
@@ -486,8 +488,82 @@ function Context() {
             ))}
           </div>
         </div>
+
+        {/* Before / After — terminal-style */}
+        <div className="mx-auto mt-20 max-w-4xl overflow-hidden rounded-2xl border border-stone-200 bg-stone-950 shadow-2xl shadow-stone-900/10">
+          {/* Title bar */}
+          <div className="flex items-center border-b border-stone-800 px-4 py-3">
+            <div className="flex gap-2">
+              <div className="h-3 w-3 rounded-full bg-stone-700" />
+              <div className="h-3 w-3 rounded-full bg-stone-700" />
+              <div className="h-3 w-3 rounded-full bg-stone-700" />
+            </div>
+            <span className="absolute inset-x-0 text-center font-mono text-xs text-stone-500">
+              generic AI vs ray
+            </span>
+          </div>
+
+          {/* Threads */}
+          <div className="divide-y divide-stone-800">
+            <TerminalThread
+              question="how should I deal with my debt?"
+              generic="You should aim to save 15–20% of your income. Consider building a 3–6 month emergency fund, then focus on paying off high-interest debt."
+              ray="You've got $34,200 in debt across two cards and a car loan. At $95k with two kids and a baby coming in March, I'd pause the Japan fund and throw that $440/mo at the Chase card — it's at 24.9%. That clears it by September and frees up $340/mo before the baby arrives."
+            />
+            <TerminalThread
+              question="can I take this trip to Tahoe?"
+              generic="A weekend trip can cost $500–$2,000 depending on the destination. Make sure it fits your budget and doesn't derail your savings goals."
+              ray="Tahoe would run about $1,200 with the Airbnb and gas. You can swing it, but it'll push your 401k contribution below the $23,000 max this year — you'd need to bump it back to 18% in May to catch up. Want me to map that out?"
+            />
+            <TerminalThread
+              question="is my rent too high?"
+              generic="It depends on your income, expenses, and financial goals. Generally, you should avoid spending more than 30% of income on housing."
+              ray="Your rent is $2,400 against $6,100 take-home — that's 39%, which is high. But you told me last week you're planning to move in with your partner in June. Once you split rent, housing drops to 22% and frees up $900/mo for the student loan blitz."
+            />
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function TerminalThread({
+  question,
+  generic,
+  ray,
+}: {
+  question: string;
+  generic: string;
+  ray: string;
+}) {
+  return (
+    <div className="px-5 py-5 font-mono text-[11px] leading-[1.7] sm:px-8 sm:py-6 sm:text-[13px]">
+      {/* User question */}
+      <p className="text-white">
+        <span className="text-stone-500">{"❯ "}</span>
+        {question}
+      </p>
+
+      {/* Generic response — crossed out */}
+      <div className="mt-3">
+        <p className="text-stone-600 text-[10px] sm:text-[11px] uppercase tracking-wider mb-1">
+          chatgpt
+        </p>
+        <p className="text-stone-600 line-through decoration-stone-700">
+          {generic}
+        </p>
+      </div>
+
+      {/* Ray response */}
+      <div className="mt-3">
+        <p className="text-lime-400 text-[10px] sm:text-[11px] uppercase tracking-wider mb-1">
+          ray
+        </p>
+        <p className="text-stone-300">
+          {ray}
+        </p>
+      </div>
+    </div>
   );
 }
 
@@ -657,12 +733,10 @@ function Pricing() {
         <div className="mx-auto mt-16 grid max-w-4xl gap-8 sm:grid-cols-2 items-start">
           {/* BYOK */}
           <div className="rounded-2xl border border-stone-200 bg-white p-8 flex flex-col sm:min-h-[560px]">
-            <div className="flex items-center gap-3">
-              <h3 className="text-lg font-bold text-stone-900">Bring Your Own Keys</h3>
-              <span className="rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-500">
-                full control
-              </span>
-            </div>
+            <span className="whitespace-nowrap self-start rounded-full bg-stone-100 px-2.5 py-0.5 text-xs font-medium text-stone-500">
+              full control
+            </span>
+            <h3 className="mt-2 text-lg font-bold text-stone-900">Bring Your Own Keys</h3>
             <p className="mt-1 text-sm text-stone-500">Free and open source forever</p>
             <p className="mt-6">
               <span className="text-4xl font-extrabold tracking-tight text-stone-900">
@@ -722,15 +796,13 @@ function Pricing() {
 
           {/* Ray API Key */}
           <div className="rounded-2xl border-2 border-stone-900 bg-white p-8 flex flex-col sm:min-h-[560px]">
-            <div className="flex items-center gap-3">
-              <h3 className="text-lg font-bold text-stone-900">
-                Ray Pro
-              </h3>
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
-                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4 5.6 21.2 8 14 2 9.2h7.6z"/></svg>
-                most popular
-              </span>
-            </div>
+            <span className="inline-flex self-start items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-medium text-amber-700">
+              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.4 7.2H22l-6 4.8 2.4 7.2L12 16.4 5.6 21.2 8 14 2 9.2h7.6z"/></svg>
+              most popular
+            </span>
+            <h3 className="mt-2 text-lg font-bold text-stone-900">
+              Ray Pro
+            </h3>
             <p className="mt-1 text-sm text-stone-500">
               Just install and go
             </p>

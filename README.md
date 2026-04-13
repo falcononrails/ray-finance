@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  An open-source CLI that connects to your bank and already knows your finances before you ask.
+  An open-source AI financial advisor that learns your situation and gets smarter every conversation.
 </p>
 
 <p align="center">
@@ -18,15 +18,15 @@
   <img src=".github/ray-demo.png" alt="Ray demo" width="100%" />
 </p>
 
-Open Ray and it shows your net worth, spending vs last month, budget pacing, and upcoming bills — before you type a word. Ask a question and it answers from your real data, not guesses. Local-first. Encrypted. Open source.
+Tell Ray about your family, goals, and financial strategy once. From then on, every answer is grounded in your real situation — not generic advice. It connects to your bank, tracks your net worth and spending, and gives you a financial briefing before you type a word. Open source. Local-first. Encrypted.
 
 ## Features
 
-### Never repeat yourself
+### It gets smarter every conversation
 
-- **Always up to speed** — Every conversation starts with your full financial picture. Net worth, spending velocity, budget alerts, goal pace, upcoming bills, and your daily score. No "let me look that up."
-- **Persistent context** — Ray maintains a financial profile that evolves with you: income, goals, strategy, key decisions, and open items. Every conversation picks up where the last one left off.
-- **Long-term memory** — Mention you're saving for a house or switching jobs and Ray remembers — without you repeating yourself.
+- **Your situation, always loaded** — Every conversation starts with your financial profile: family, income, goals, strategy, key decisions, and open items. Ray reads it all before you type a word.
+- **Self-updating context** — Got a raise? Had a baby? Decided to pay off debt aggressively? Ray updates your profile automatically when your situation changes.
+- **Long-term memory** — Mention you're saving for a house or that you cancelled a subscription. Ray remembers across every future conversation.
 
 ### Stay on track without trying
 

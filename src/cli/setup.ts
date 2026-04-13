@@ -36,7 +36,7 @@ export async function runSetup(): Promise<void> {
     message: "How would you like to set up Ray?",
     choices: [
       { name: "Quick setup — we handle the API keys, your data stays local", value: "managed" },
-      { name: "Self-hosted — bring your own Anthropic and Plaid credentials", value: "selfhosted" },
+      { name: "Bring your own keys — use your own Anthropic and Plaid credentials", value: "selfhosted" },
     ],
   }]);
 

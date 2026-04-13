@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://rayfinance.app"),
   title: "Ray — AI Financial Advisor, Running Locally",
   description:
-    "An open-source CLI that connects to your bank and gives you AI-powered financial advice — all running locally on your machine.",
+    "An open-source AI financial advisor that learns your full situation and gives personalized advice from your real bank data — running locally on your machine.",
   keywords: [
     "AI financial advisor",
     "personal finance CLI",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ray — AI Financial Advisor, Running Locally",
     description:
-      "An open-source CLI that connects to your bank and gives you AI-powered financial advice — all running locally on your machine.",
+      "An open-source AI financial advisor that learns your full situation and gives personalized advice from your real bank data — running locally on your machine.",
     url: "https://rayfinance.app",
     siteName: "Ray Finance",
     type: "website",
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Ray — AI Financial Advisor, Running Locally",
     description:
-      "An open-source CLI that connects to your bank and gives you AI-powered financial advice — all running locally on your machine.",
+      "An open-source AI financial advisor that learns your full situation and gives personalized advice from your real bank data — running locally on your machine.",
     images: ["/ray-og.jpg"],
   },
   icons: {
@@ -70,7 +70,7 @@ const organizationJsonLd = {
   url: "https://rayfinance.app",
   logo: "https://rayfinance.app/favicon.png",
   description:
-    "Ray is an open-source, local-first AI financial advisor that connects to your bank via Plaid and gives personalized financial advice — all running on your machine.",
+    "Ray is an open-source AI financial advisor that learns your full situation — family, goals, career, strategy — and gives personalized advice from your real bank data. Local-first and open source.",
   foundingDate: "2024",
   founder: {
     "@type": "Person",

@@ -88,7 +88,7 @@ export const beginnersGuide = {
         },
         {
           title: "Path B: Bring Your Own Keys (free)",
-          body: "You need two things before running setup:\n\n1. An Anthropic API key — this powers the AI. Create a free account at console.anthropic.com, add a payment method, then generate an API key. Detailed steps are in our Anthropic API key guide.\n\n2. Plaid credentials — this connects to your bank. Create a free account at dashboard.plaid.com, then apply for production access (takes 1–2 weeks). Detailed steps are in our Plaid credentials guide.\n\nOnce you have both, type `ray setup` and press Enter. Select \"Bring your own keys\" and paste in your credentials when prompted.",
+          body: "You need two things before running setup:\n\n1. An Anthropic API key — this powers the AI. Create a free account at console.anthropic.com, add a payment method, then generate an API key. Detailed steps are in our Anthropic API key guide.\n\n2. Plaid production credentials — this connects to your bank. Create a free account at dashboard.plaid.com, then apply for production access (takes 1–2 weeks). Important: Ray requires production credentials — sandbox or development keys will not work. Detailed steps are in our Plaid credentials guide.\n\nOnce you have both, type `ray setup` and press Enter. Select \"Bring your own keys\" and paste in your credentials when prompted.",
           link: "https://console.anthropic.com/",
         },
       ],

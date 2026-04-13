@@ -48,7 +48,7 @@ export const guides: Guide[] = [
     steps: [
       {
         title: "Create a Plaid developer account",
-        body: "Sign up for a free Plaid account. You'll get sandbox credentials immediately — these let you test with fake data.",
+        body: "Sign up for a free Plaid account. You'll get sandbox credentials immediately, but Ray requires production credentials to connect to real banks. Sandbox keys will not work.",
         link: "https://plaid.com/docs/quickstart/",
       },
       {
@@ -57,8 +57,8 @@ export const guides: Guide[] = [
         link: "https://dashboard.plaid.com/overview/production",
       },
       {
-        title: "Get your Client ID and Secret",
-        body: "Once approved, go to Keys in the Plaid dashboard. You'll see your Client ID and a Secret for each environment. Copy the production Client ID and Secret.",
+        title: "Get your production Client ID and Secret",
+        body: "Once approved, go to Keys in the Plaid dashboard. You'll see your Client ID and a Secret for each environment. Copy the production Client ID and production Secret. Do not use the sandbox or development keys — Ray connects to Plaid's production environment only.",
         link: "https://dashboard.plaid.com/developers/keys",
       },
       {

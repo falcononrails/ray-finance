@@ -91,7 +91,14 @@ export function startLinkServer(): LinkResult {
       res.json({ link_token: linkToken });
     } catch (error: any) {
       console.error("Link token error:", error.message);
-      res.status(500).json({ error: "Failed to create link token" });
+      const plaidStatus = error?.response?.status;
+      if (plaidStatus === 400 || plaidStatus === 401 || plaidStatus === 403) {
+        res.status(500).json({
+          error: "Plaid credentials error — make sure you're using production (not sandbox) keys. Check PLAID_CLIENT_ID and PLAID_SECRET in ~/.ray/config.json.",
+        });
+      } else {
+        res.status(500).json({ error: "Failed to create link token: " + (error.message || "unknown error") });
+      }
     }
   });
 
