@@ -1,5 +1,14 @@
 import { plaidClient } from "./client.js";
 import { CountryCode, Products } from "plaid";
+import { config } from "../config.js";
+
+export function getCountryCodes(): CountryCode[] {
+  const codes = config.plaidCountries
+    .map(c => c.toUpperCase() as keyof typeof CountryCode)
+    .filter(c => c in CountryCode)
+    .map(c => CountryCode[c]);
+  return codes.length > 0 ? codes : [CountryCode.Us];
+}
 
 /** Create a link token for initializing Plaid Link */
 export async function createLinkToken(products: Products[] = [Products.Transactions]) {
@@ -8,7 +17,7 @@ export async function createLinkToken(products: Products[] = [Products.Transacti
     client_name: "Ray Finance",
     products,
     optional_products: [Products.Investments, Products.Liabilities],
-    country_codes: [CountryCode.Us],
+    country_codes: getCountryCodes(),
     language: "en",
   });
   return resp.data.link_token;

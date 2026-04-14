@@ -109,7 +109,7 @@ export async function runDoctor(): Promise<void> {
 
   // ── Encryption ──
   if (config.dbEncryptionKey) {
-    checks.push({ label: "Encryption", status: "ok", detail: "AES-256-CBC enabled" });
+    checks.push({ label: "Encryption", status: "ok", detail: "AES-256-GCM enabled" });
   } else {
     checks.push({ label: "Encryption", status: "warn", detail: "No encryption key set. Data stored in plaintext." });
   }

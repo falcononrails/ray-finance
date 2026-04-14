@@ -420,6 +420,7 @@ export async function executeTool(db: Database.Database, toolName: string, toolI
         if (toolInput.target_amount !== undefined) { updates.push("target_amount = ?"); params.push(toolInput.target_amount); }
         if (toolInput.current_amount !== undefined) { updates.push("current_amount = ?"); params.push(toolInput.current_amount); }
         if (toolInput.target_date !== undefined) { updates.push("target_date = ?"); params.push(toolInput.target_date); }
+        if (updates.length === 0) return `Goal "${toolInput.name}" exists but no changes provided.`;
         params.push(existing.id);
         db.prepare(`UPDATE goals SET ${updates.join(", ")} WHERE id = ?`).run(...params);
         return `Goal "${toolInput.name}" updated.`;

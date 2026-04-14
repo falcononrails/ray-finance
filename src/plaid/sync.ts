@@ -1,7 +1,7 @@
 import { plaidClient } from "./client.js";
 import type BetterSqlite3 from "libsql";
 type Database = BetterSqlite3.Database;
-import { CountryCode } from "plaid";
+import { getCountryCodes } from "./link.js";
 import type { RemovedTransaction, Transaction, TransactionStream } from "plaid";
 
 /** Check if a Plaid API error is "product not supported/enabled" — safe to ignore */
@@ -38,7 +38,7 @@ export async function refreshProducts(
     try {
       const { data } = await plaidClient.institutionsGetById({
         institution_id: resp.data.item.institution_id,
-        country_codes: [CountryCode.Us],
+        country_codes: getCountryCodes(),
         options: { include_optional_metadata: true },
       });
       db.prepare(`UPDATE institutions SET logo = ?, primary_color = ? WHERE item_id = ?`)

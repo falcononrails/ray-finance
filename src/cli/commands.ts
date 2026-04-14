@@ -221,7 +221,13 @@ export function showTransactions(options: { limit?: number; category?: string; m
 export async function showSpending(period = "this_month"): Promise<void> {
   const db = getDb();
   const { resolvePeriod } = await import("../db/helpers.js");
-  const { start, end } = resolvePeriod(period);
+  let start: string, end: string;
+  try {
+    ({ start, end } = resolvePeriod(period));
+  } catch {
+    console.log(`\nUnknown period "${period}". Use: this_month, last_month, last_30, last_90, or START:END`);
+    return;
+  }
 
   const rows = db.prepare(
     `SELECT category, SUM(amount) as total, COUNT(*) as count FROM transactions

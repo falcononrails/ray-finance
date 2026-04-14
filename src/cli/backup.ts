@@ -10,7 +10,7 @@ interface BackupData {
   exported_at: string;
   context: string;
   memories: { content: string; category: string }[];
-  goals: { name: string; target_amount: number; current_amount: number; deadline: string | null; status: string }[];
+  goals: { name: string; target_amount: number; current_amount: number; target_date: string | null; deadline?: string | null; status: string }[];
   budgets: { category: string; monthly_limit: number; period: string }[];
   recat_rules: { match_field: string; match_pattern: string; target_category: string; target_subcategory: string | null; label: string | null }[];
   settings: { key: string; value: string }[];
@@ -26,7 +26,7 @@ export function runExport(outputPath?: string): void {
     exported_at: new Date().toISOString(),
     context: readContext(),
     memories: db.prepare("SELECT content, category FROM memories").all() as any[],
-    goals: db.prepare("SELECT name, target_amount, current_amount, deadline, status FROM goals").all() as any[],
+    goals: db.prepare("SELECT name, target_amount, current_amount, target_date, status FROM goals").all() as any[],
     budgets: db.prepare("SELECT category, monthly_limit, period FROM budgets").all() as any[],
     recat_rules: db.prepare("SELECT match_field, match_pattern, target_category, target_subcategory, label FROM recategorization_rules").all() as any[],
     settings: db.prepare("SELECT key, value FROM settings").all() as any[],
@@ -78,11 +78,11 @@ export function runImport(inputPath: string): void {
   // Restore goals (skip if name already exists)
   const existingGoal = db.prepare("SELECT 1 FROM goals WHERE name = ?");
   const insertGoal = db.prepare(
-    "INSERT INTO goals (name, target_amount, current_amount, deadline, status) VALUES (?, ?, ?, ?, ?)"
+    "INSERT INTO goals (name, target_amount, current_amount, target_date, status) VALUES (?, ?, ?, ?, ?)"
   );
   for (const g of backup.goals) {
     if (!existingGoal.get(g.name)) {
-      insertGoal.run(g.name, g.target_amount, g.current_amount, g.deadline, g.status);
+      insertGoal.run(g.name, g.target_amount, g.current_amount, g.target_date ?? g.deadline ?? null, g.status);
     }
   }
 

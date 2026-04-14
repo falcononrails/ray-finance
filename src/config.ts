@@ -17,6 +17,7 @@ export interface RayConfig {
   userName: string;
   thinkingBudget: number;
   syncSchedule: string; // "HH:MM" for daily sync, "" for disabled
+  plaidCountries: string[]; // ISO country codes for Plaid Link (e.g. ["US", "GB"])
 }
 
 export const RAY_PROXY_BASE = "https://api.rayfinance.app/v1";
@@ -57,6 +58,7 @@ function buildConfig(): RayConfig {
     userName: file.userName || process.env.RAY_USER_NAME || "User",
     thinkingBudget: file.thinkingBudget ?? (Number(process.env.RAY_THINKING_BUDGET) || 8000),
     syncSchedule: file.syncSchedule || "",
+    plaidCountries: file.plaidCountries || ["US", "GB", "CA"],
   };
 }
 

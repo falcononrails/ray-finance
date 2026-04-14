@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { createLinkToken, exchangeToken } from "./plaid/link.js";
 import { syncBalances, syncTransactions, syncInvestments, syncInvestmentTransactions, syncLiabilities, syncRecurring, isProductNotSupported } from "./plaid/sync.js";
 import { plaidClient } from "./plaid/client.js";
-import { CountryCode } from "plaid";
+import { getCountryCodes } from "./plaid/link.js";
 import { encryptPlaidToken } from "./db/encryption.js";
 import { config } from "./config.js";
 import { getDb } from "./db/connection.js";
@@ -199,7 +199,7 @@ export function startLinkServer(): LinkResult {
         try {
           const { data } = await plaidClient.institutionsGetById({
             institution_id: req.body.institution_id,
-            country_codes: [CountryCode.Us],
+            country_codes: getCountryCodes(),
             options: { include_optional_metadata: true },
           });
           institutionLogo = data.institution.logo || null;
