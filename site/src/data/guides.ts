@@ -34,7 +34,7 @@ export const guides: Guide[] = [
         body: "Run `ray setup` and paste your key when prompted. Ray stores it locally in an encrypted config file — it never leaves your machine.",
       },
     ],
-    tip: "If you don't want to manage your own API key, the $10/mo Ray Pro plan includes AI access. Just run `ray setup`, pick \"Ray Pro\", and pay $10/mo — no Anthropic account needed.",
+    tip: "If you don't want to manage your own API key, the $10/mo Ray Pro plan includes AI access. Just run `ray setup`, pick \"Ray Pro\", and pay $10/mo — no API key needed. You can also use OpenAI, Ollama, or any OpenAI-compatible provider instead of Anthropic.",
     relatedGuides: ["get-plaid-credentials"],
     metaTitle: "How to Get an Anthropic API Key for Ray | Ray Finance",
     metaDescription:
@@ -107,7 +107,7 @@ export const guides: Guide[] = [
         body: "Ray is MIT licensed and fully open source. You can read every line of code, verify what data is sent where, and confirm that nothing is phoning home. You can't do this with Monarch, Copilot, or any closed-source finance app. If privacy matters to you, verifiability matters — and open source is the only way to get it.",
       },
     ],
-    tip: "If you want local-first privacy without managing your own API keys, the $10/mo Ray Pro plan still keeps all financial data on your machine. The only difference is that Ray Pro routes AI calls through our proxy (still PII-masked) so you don't need your own Anthropic or Plaid accounts.",
+    tip: "If you want local-first privacy without managing your own API keys, the $10/mo Ray Pro plan still keeps all financial data on your machine. The only difference is that Ray Pro routes AI calls through our proxy (still PII-masked) so you don't need your own AI provider or Plaid accounts. For maximum privacy, run Ollama locally and your AI calls never leave your machine at all.",
     relatedGuides: ["get-anthropic-api-key", "get-plaid-credentials"],
     metaTitle: "Why Local-First Matters for Personal Finance | Ray Finance",
     metaDescription:

@@ -69,7 +69,7 @@ ray --demo alerts       # financial alerts
 ray --demo transactions # recent transactions
 ```
 
-The dashboard commands work with no setup at all. To also try the AI chat with demo data, run `ray setup` first and add an [Anthropic API key](https://console.anthropic.com) or Ray API key — then `ray --demo` will start an interactive session where you can ask questions about the fake portfolio.
+The dashboard commands work with no setup at all. To also try the AI chat with demo data, run `ray setup` first and add an API key (Anthropic, OpenAI, or any OpenAI-compatible provider) — then `ray --demo` will start an interactive session where you can ask questions about the fake portfolio.
 
 When you're ready to connect real accounts, run `ray link`.
 
@@ -92,12 +92,13 @@ We handle the API keys. Your data stays local. $10/mo.
 
 ### Bring your own keys
 
-Bring your own Anthropic and Plaid credentials. Free forever.
+Bring your own AI and Plaid credentials. Free forever.
 
-1. Enter your Anthropic API key ([get one](https://console.anthropic.com))
-2. Enter your Plaid credentials ([get free keys](https://dashboard.plaid.com/signup))
-3. Link your accounts — checking, savings, credit cards, investments, loans, mortgage
-4. Done
+1. Pick your AI provider — Anthropic, OpenAI, Ollama (local), or any OpenAI-compatible endpoint
+2. Enter your API key and pick a model
+3. Enter your Plaid credentials ([get free keys](https://dashboard.plaid.com/signup))
+4. Link your accounts — checking, savings, credit cards, investments, loans, mortgage
+5. Done
 
 ## Commands
 
@@ -147,11 +148,11 @@ Run `ray --help` to see all available commands.
                  │  scoring · alerts   │
                  └──────────┬──────────┘
                             │
-                      Claude API
+                       LLM API
                      (PII-masked)
 ```
 
-Two outbound calls: Plaid (bank sync) and Anthropic (AI chat, PII-masked). Your financial data is never stored off your machine. No telemetry. No analytics.
+Two outbound calls: Plaid (bank sync) and your AI provider (PII-masked). Supports Anthropic, OpenAI, Ollama, and any OpenAI-compatible endpoint. Your financial data is never stored off your machine. No telemetry. No analytics.
 
 ## Security & Privacy
 
@@ -159,8 +160,8 @@ Two outbound calls: Plaid (bank sync) and Anthropic (AI chat, PII-masked). Your 
 - Database encrypted with AES-256 (SQLCipher)
 - Plaid access tokens encrypted at rest with AES-256-GCM
 - Config file stored with `0600` permissions
-- PII redacted before sending to Claude API
-- No data leaves your machine — only API calls to Plaid and Anthropic
+- PII redacted before sending to any AI provider
+- No data leaves your machine — only API calls to Plaid and your AI provider
 
 ## Configuration
 
@@ -181,18 +182,22 @@ Ray stores everything in `~/.ray/`:
 You can also configure Ray via environment variables or a `.env` file:
 
 ```bash
-ANTHROPIC_API_KEY=     # Anthropic API key for AI chat
-PLAID_CLIENT_ID=       # Plaid client ID
-PLAID_SECRET=          # Plaid secret key
-PLAID_ENV=production   # Plaid environment
-DB_ENCRYPTION_KEY=     # Database encryption key
-PLAID_TOKEN_SECRET=    # Key for encrypting stored Plaid tokens
-RAY_API_KEY=           # Ray API key (managed mode, replaces the above)
+ANTHROPIC_API_KEY=          # Anthropic API key (if using Anthropic)
+OPENAI_COMPATIBLE_KEY=      # API key for OpenAI or compatible provider
+OPENAI_COMPATIBLE_BASE_URL= # Base URL (e.g. https://api.openai.com/v1, http://localhost:11434/v1)
+RAY_PROVIDER=               # "anthropic" or "openai-compatible"
+RAY_MODEL=                  # Model name (e.g. claude-sonnet-4-6, gpt-4o, llama3.1)
+PLAID_CLIENT_ID=            # Plaid client ID
+PLAID_SECRET=               # Plaid secret key
+PLAID_ENV=production        # Plaid environment
+DB_ENCRYPTION_KEY=          # Database encryption key
+PLAID_TOKEN_SECRET=         # Key for encrypting stored Plaid tokens
+RAY_API_KEY=                # Ray API key (managed mode, replaces the above)
 ```
 
 ## Roadmap
 
-- [ ] Bring your own model — use any LLM provider (OpenAI, Ollama, open-source models, etc.)
+- [x] Bring your own model — use any LLM provider (OpenAI, Ollama, open-source models, etc.)
 - [ ] Daily digest email — morning summary of your finances
 
 Have an idea? [Open a PR](https://github.com/cdinnison/ray-finance/pulls).

@@ -1,17 +1,16 @@
-import Anthropic from "@anthropic-ai/sdk";
 import type Database from "libsql";
-import { config, useManaged, RAY_PROXY_BASE } from "../config.js";
+import { config, useManaged } from "../config.js";
 import { buildSystemPrompt } from "./system-prompt.js";
 import { toolDefinitions, executeTool } from "./tools.js";
 import { getConversationHistory, saveMessage } from "./memory.js";
 import { logToolCall } from "./audit.js";
 import { redact, unredact } from "./redactor.js";
+import { createProvider } from "./providers/index.js";
+import type { NormalizedMessage, NormalizedToolResult, NormalizedContentBlock } from "./provider.js";
 
-const anthropic = new Anthropic(
-  useManaged()
-    ? { apiKey: config.rayApiKey, baseURL: `${RAY_PROXY_BASE}/ai` }
-    : { apiKey: config.anthropicKey }
-);
+const provider = createProvider();
+
+const MAX_TOOL_STEPS = 10;
 
 function supportsThinking(model: string): boolean {
   return /sonnet-4|opus-4/i.test(model);
@@ -64,7 +63,7 @@ export async function handleMessage(
   const systemPrompt = redact(buildSystemPrompt(db));
 
   // Build messages array from history, redacting PII
-  const messages: Anthropic.MessageParam[] = history.map(h => ({
+  const messages: NormalizedMessage[] = history.map(h => ({
     role: h.role as "user" | "assistant",
     content: redact(h.content),
   }));
@@ -74,43 +73,34 @@ export async function handleMessage(
     messages.push({ role: "user", content: redact(userMessage) });
   }
 
-  // Extended thinking config
-  const useThinking = config.thinkingBudget > 0 && supportsThinking(config.model);
+  // Extended thinking config — only for providers that support it
+  const useThinking = config.thinkingBudget > 0
+    && provider.supportsThinking
+    && supportsThinking(config.model);
 
   try {
-    // Build API params
-    const apiParams: any = {
+    // Initial API call
+    let response = await provider.sendMessage({
       model: config.model,
-      max_tokens: useThinking ? 16000 : 4096,
+      maxTokens: useThinking ? 16000 : 4096,
       system: systemPrompt,
       tools: toolDefinitions,
       messages,
-    };
-
-    if (useThinking) {
-      apiParams.thinking = {
-        type: "enabled",
-        budget_tokens: config.thinkingBudget,
-      };
-    }
-
-    // Initial API call
-    let response = await anthropic.messages.create(apiParams);
+      thinking: useThinking
+        ? { type: "enabled", budget_tokens: config.thinkingBudget }
+        : undefined,
+    });
 
     // Agentic tool loop
     const startTime = Date.now();
     let toolCount = 0;
 
-    while (response.stop_reason === "tool_use") {
-      // Filter out thinking blocks before adding to messages
-      const assistantContent = response.content.filter(
-        (b: any) => b.type !== "thinking"
-      ) as Anthropic.ContentBlock[];
-      messages.push({ role: "assistant", content: assistantContent });
+    while (response.stopReason === "tool_use" && toolCount < MAX_TOOL_STEPS) {
+      messages.push({ role: "assistant", content: response.content });
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      const toolResults: NormalizedToolResult[] = [];
 
-      for (const block of assistantContent) {
+      for (const block of response.content) {
         if (block.type === "tool_use") {
           toolCount++;
           onProgress?.({
@@ -137,12 +127,21 @@ export async function handleMessage(
         elapsedMs: Date.now() - startTime,
       });
 
-      response = await anthropic.messages.create(apiParams);
+      response = await provider.sendMessage({
+        model: config.model,
+        maxTokens: useThinking ? 16000 : 4096,
+        system: systemPrompt,
+        tools: toolDefinitions,
+        messages,
+        thinking: useThinking
+          ? { type: "enabled", budget_tokens: config.thinkingBudget }
+          : undefined,
+      });
     }
 
-    // Extract text response (filter out thinking blocks), restore PII for display
-    const textBlocks = response.content.filter((b: any) => b.type === "text");
-    const responseText = unredact(textBlocks.map((b: any) => b.text).join("\n"));
+    // Extract text response, restore PII for display
+    const textBlocks = response.content.filter((b): b is Extract<NormalizedContentBlock, { type: "text" }> => b.type === "text");
+    const responseText = unredact(textBlocks.map(b => b.text).join("\n"));
 
     // Save assistant response
     saveMessage(db, "assistant", responseText);
@@ -150,7 +149,10 @@ export async function handleMessage(
     return responseText || "I looked into that but couldn't formulate a response. Could you try rephrasing?";
   } catch (error: any) {
     if (error.status === 403) {
-      return "Your API key was rejected. This usually means your subscription is inactive. Run `ray billing` to check your payment status, or `ray setup` to reconfigure.";
+      if (useManaged()) {
+        return "Your API key was rejected. This usually means your subscription is inactive. Run `ray billing` to check your payment status, or `ray setup` to reconfigure.";
+      }
+      return "Your API key was rejected (403 Forbidden). Run `ray setup` to reconfigure your credentials.";
     }
     if (error.status === 401) {
       return "Invalid API key. Run `ray setup` to reconfigure your credentials.";
@@ -159,7 +161,7 @@ export async function handleMessage(
       return "Rate limited. Wait a moment and try again.";
     }
     const safeMessage = error.status
-      ? `API error (${error.status})`
+      ? `API error (${error.status}): ${error.message || ""}`
       : error.message || "internal error";
     console.error("AI error:", safeMessage);
     return "Sorry, I had trouble processing that. Could you try again?";

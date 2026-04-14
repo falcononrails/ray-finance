@@ -1,5 +1,5 @@
 import type Database from "libsql";
-import type { Tool } from "@anthropic-ai/sdk/resources/messages.js";
+import type { ToolDefinition } from "./provider.js";
 import {
   getNetWorth, getAccountBalances, getTransactionsFiltered,
   getRecentSpending, getBudgetStatuses, getGoals,
@@ -14,7 +14,7 @@ import { saveMemory, getMemories } from "./memory.js";
 import { readContext, writeContext, replaceContextSection } from "./context.js";
 import { simulatePayoff } from "../db/helpers.js";
 
-export const toolDefinitions: Tool[] = [
+export const toolDefinitions: ToolDefinition[] = [
   // --- Existing tools ---
   {
     name: "get_net_worth",

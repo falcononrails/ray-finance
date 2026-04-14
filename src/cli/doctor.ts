@@ -70,8 +70,33 @@ export async function runDoctor(): Promise<void> {
       status: valid ? "ok" : "warn",
       detail: valid ? "Ray managed (ray_***)" : "Key doesn't start with ray_ — may be invalid",
     });
+  } else if (config.providerType === "openai-compatible") {
+    let detail = `OpenAI-compatible (${config.openaiCompatibleBaseURL || "no base URL"})`;
+    let status: Check["status"] = "ok";
+
+    // Check Ollama reachability for localhost URLs
+    if (config.openaiCompatibleBaseURL.includes("localhost") || config.openaiCompatibleBaseURL.includes("127.0.0.1")) {
+      try {
+        const resp = await fetch(config.openaiCompatibleBaseURL.replace(/\/v1$/, "/v1/models"));
+        if (!resp.ok) {
+          status = "warn";
+          detail += " — not reachable";
+        }
+      } catch {
+        status = "warn";
+        detail += " — not reachable";
+      }
+    }
+    checks.push({ label: "Authentication", status, detail });
   } else {
     checks.push({ label: "Authentication", status: "ok", detail: "Self-hosted (Anthropic key)" });
+  }
+
+  // ── Provider ──
+  if (config.providerType === "openai-compatible") {
+    checks.push({ label: "AI model", status: "ok", detail: `${config.model} via ${config.openaiCompatibleBaseURL}` });
+  } else {
+    checks.push({ label: "AI model", status: "ok", detail: config.model });
   }
 
   // ── Database ──

@@ -80,7 +80,7 @@ export const beginnersGuide = {
       steps: [
         {
           title: "Choose your path: Pro or Bring Your Own Keys",
-          body: "Ray Pro ($10/month) is the fastest way to get started — you don't need to create accounts with Anthropic or Plaid. Everything is handled for you. Your data still stays on your machine.\n\nBring Your Own Keys is completely free, but requires creating accounts with Anthropic (for AI) and Plaid (for bank connections). It takes a bit more setup, and Plaid production access can take 1–2 weeks to approve.\n\nPick one and follow the matching steps below.",
+          body: "Ray Pro ($10/month) is the fastest way to get started — you don't need to create accounts with any AI provider or Plaid. Everything is handled for you. Your data still stays on your machine.\n\nBring Your Own Keys is completely free, but requires an AI provider (Anthropic, OpenAI, Ollama, or any OpenAI-compatible service) and Plaid credentials for bank connections. It takes a bit more setup, and Plaid production access can take 1–2 weeks to approve.\n\nPick one and follow the matching steps below.",
         },
         {
           title: "Path A: Ray Pro (quick setup)",
@@ -88,8 +88,7 @@ export const beginnersGuide = {
         },
         {
           title: "Path B: Bring Your Own Keys (free)",
-          body: "You need two things before running setup:\n\n1. An Anthropic API key — this powers the AI. Create a free account at console.anthropic.com, add a payment method, then generate an API key. Detailed steps are in our Anthropic API key guide.\n\n2. Plaid production credentials — this connects to your bank. Create a free account at dashboard.plaid.com, then apply for production access (takes 1–2 weeks). Important: Ray requires production credentials — sandbox or development keys will not work. Detailed steps are in our Plaid credentials guide.\n\nOnce you have both, type `ray setup` and press Enter. Select \"Bring your own keys\" and paste in your credentials when prompted.",
-          link: "https://console.anthropic.com/",
+          body: "You need two things before running setup:\n\n1. An AI provider — Ray supports Anthropic (Claude), OpenAI (GPT), Ollama (local models), and any OpenAI-compatible endpoint like DeepSeek or Groq. Pick whichever you prefer. For Anthropic or OpenAI, create an account and generate an API key. For Ollama, install it locally and pull a model that supports tool calling.\n\n2. Plaid production credentials — this connects to your bank. Create a free account at dashboard.plaid.com, then apply for production access (takes 1–2 weeks). Important: Ray requires production credentials — sandbox or development keys will not work. Detailed steps are in our Plaid credentials guide.\n\nOnce you have both, type `ray setup` and press Enter. Select \"Bring your own keys\", pick your AI provider, and paste in your credentials when prompted.",
         },
       ],
     },

@@ -69,7 +69,7 @@ const faqItems = [
   {
     question: "How much does Ray cost?",
     answer:
-      "Ray has two plans. The free plan is fully open source (MIT licensed) — you install it with npm, bring your own Anthropic API key for AI and your own Plaid credentials for bank access. You pay Anthropic directly for AI usage, which is typically $1–3/month. The tradeoff is setup: Plaid production access requires a business entity, isn't guaranteed, and takes 1–2 weeks if approved. Ray Pro is $10/month and includes everything — AI and bank connectivity are built in, so you just install and connect your accounts in minutes. Both plans are the same app with the same features, and both keep all your financial data local on your machine. The only difference is whether you manage your own API keys or let Ray handle it.",
+      "Ray has two plans. The free plan is fully open source (MIT licensed) — you install it with npm, bring your own AI provider (Anthropic, OpenAI, Ollama, or any OpenAI-compatible endpoint) and your own Plaid credentials for bank access. You pay your provider directly for AI usage, which is typically $1–3/month. The tradeoff is setup: Plaid production access requires a business entity, isn't guaranteed, and takes 1–2 weeks if approved. Ray Pro is $10/month and includes everything — AI and bank connectivity are built in, so you just install and connect your accounts in minutes. Both plans are the same app with the same features, and both keep all your financial data local on your machine. The only difference is whether you manage your own API keys or let Ray handle it.",
   },
   {
     question: "Which banks does Ray work with?",
@@ -608,7 +608,7 @@ function Privacy() {
           />
           <PrivacyCard
             title="Two outbound calls"
-            description="Plaid for bank sync, Anthropic for AI chat (PII-masked). That's it. No telemetry. No analytics."
+            description="Plaid for bank sync, your AI provider for chat (PII-masked). That's it. No telemetry. No analytics."
             href="https://github.com/cdinnison/ray-finance/blob/main/src/plaid/client.ts"
           />
         </div>
@@ -746,7 +746,7 @@ function Pricing() {
             </p>
             <ul className="mt-8 space-y-3 text-sm text-stone-600">
               <PricingItem>Open source, MIT licensed</PricingItem>
-              <PricingItem>Your own Anthropic API key</PricingItem>
+              <PricingItem>Your own AI key (Anthropic, OpenAI, Ollama, etc.)</PricingItem>
               <PricingItem>Your own Plaid credentials</PricingItem>
               <PricingItem>Full model selection</PricingItem>
               <PricingItem>All features included</PricingItem>
@@ -773,7 +773,7 @@ function Pricing() {
               </summary>
               <div className="mt-4 ml-1 border-l-2 border-stone-200 pl-4 space-y-4">
                 <SetupStep time="~5 min" href="/guides/get-anthropic-api-key">
-                  Sign up for Anthropic &amp; add billing
+                  Get an AI API key (Anthropic, OpenAI, or run Ollama locally)
                 </SetupStep>
                 <SetupStep time="~5 min" href="/guides/get-plaid-credentials">
                   Create Plaid developer account

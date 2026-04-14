@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.0
+
+- **Bring your own model** — use any AI provider: Anthropic (Claude), OpenAI (GPT), Ollama (local), or any OpenAI-compatible endpoint (DeepSeek, Groq, vLLM, etc.). Model list fetched from models.dev during setup.
+- Setup flow improvements: provider picker, dynamic model list, masked key input, skip re-linking on reconfigure
+- Max tool step guard (10 iterations) to prevent runaway loops
+- Dashboard colors updated from red to amber
+
 ## 0.2.0
 
 Initial open source release.

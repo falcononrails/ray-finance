@@ -324,7 +324,7 @@ export function cliBriefing(db: Database.Database): string | null {
     const change = nw.net_worth - nw.prev_net_worth;
     nwLine += change >= 0
       ? chalk.green(` +${fmtMoney(change)}`)
-      : chalk.red(` -${fmtMoney(Math.abs(change))}`);
+      : chalk.hex("#FF9F43")(` -${fmtMoney(Math.abs(change))}`);
   }
   lines.push(chalk.dim("  net worth") + nwLine);
 
@@ -364,7 +364,7 @@ export function cliBriefing(db: Database.Database): string | null {
 
     if (cmp.period1Total > 0) {
       const diff = cmp.period2Total - cmp.period1Total;
-      const arrow = diff <= 0 ? chalk.green(`${fmtMoney(Math.abs(diff))} less`) : chalk.red(`${fmtMoney(diff)} more`);
+      const arrow = diff <= 0 ? chalk.green(`${fmtMoney(Math.abs(diff))} less`) : chalk.hex("#FF9F43")(`${fmtMoney(diff)} more`);
       lines.push(chalk.dim("  spending") + chalk.white(`  ${fmtMoney(thisMonthSpend.total)} this month`) + chalk.dim(` · `) + arrow + chalk.dim(` than this point last month`));
 
       // Top movers (up to 3, show both ups and downs)
@@ -375,7 +375,7 @@ export function cliBriefing(db: Database.Database): string | null {
       if (movers.length > 0) {
         const moverStrs = movers.map(m => {
           const label = categoryLabel(m.category).toLowerCase();
-          const color = m.diff <= 0 ? chalk.green : chalk.red;
+          const color = m.diff <= 0 ? chalk.green : chalk.hex("#FF9F43");
           const sign = m.diff <= 0 ? "-" : "+";
           return `${chalk.dim(label)} ${color(`${sign}${fmtMoney(Math.abs(m.diff))}`)}`;
         });
@@ -393,7 +393,7 @@ export function cliBriefing(db: Database.Database): string | null {
     lines.push("");
     for (const b of hot) {
       const pct = Math.round(b.pct_used);
-      const color = b.over_budget ? chalk.red : chalk.yellow;
+      const color = b.over_budget ? chalk.hex("#FF9F43") : chalk.yellow;
       const bar = miniBar(b.pct_used);
       lines.push(`  ${bar}  ${color(categoryLabel(b.category).toLowerCase())} ${chalk.dim(`${pct}%`)}`);
     }
@@ -436,7 +436,7 @@ export function cliBriefing(db: Database.Database): string | null {
   const score = getLatestScore(db);
   if (score) {
     lines.push("");
-    const scoreColor = score.score >= 70 ? chalk.green : score.score >= 40 ? chalk.yellow : chalk.red;
+    const scoreColor = score.score >= 70 ? chalk.green : score.score >= 40 ? chalk.yellow : chalk.hex("#FF9F43");
     let scoreLine = `  ${chalk.dim("score")}     ${scoreColor(String(score.score))}${chalk.dim("/100")}`;
     const streaks: string[] = [];
     if (score.no_restaurant_streak > 0) streaks.push(`${score.no_restaurant_streak}d no dining`);
@@ -457,7 +457,7 @@ function miniBar(pct: number): string {
   const clamped = Math.max(0, Math.min(100, pct));
   const filled = Math.round((clamped / 100) * width);
   const empty = width - filled;
-  const color = pct > 100 ? chalk.red : pct > 80 ? chalk.yellow : chalk.green;
+  const color = pct > 100 ? chalk.hex("#FF9F43") : pct > 80 ? chalk.yellow : chalk.green;
   return color("▓".repeat(filled)) + chalk.dim("░".repeat(empty));
 }
 

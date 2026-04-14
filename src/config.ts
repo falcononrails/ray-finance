@@ -7,6 +7,9 @@ export interface RayConfig {
   anthropicKey: string;
   rayApiKey: string;
   model: string;
+  providerType: "anthropic" | "openai-compatible";
+  openaiCompatibleKey: string;
+  openaiCompatibleBaseURL: string;
   plaidClientId: string;
   plaidSecret: string;
   plaidEnv: string;
@@ -48,6 +51,9 @@ function buildConfig(): RayConfig {
     anthropicKey: file.anthropicKey || process.env.ANTHROPIC_API_KEY || "",
     rayApiKey: file.rayApiKey || process.env.RAY_API_KEY || "",
     model: file.model || process.env.RAY_MODEL || "claude-sonnet-4-6",
+    providerType: file.providerType || (process.env.RAY_PROVIDER as any) || "anthropic",
+    openaiCompatibleKey: file.openaiCompatibleKey || process.env.OPENAI_COMPATIBLE_KEY || "",
+    openaiCompatibleBaseURL: file.openaiCompatibleBaseURL || process.env.OPENAI_COMPATIBLE_BASE_URL || "",
     plaidClientId: file.plaidClientId || process.env.PLAID_CLIENT_ID || "",
     plaidSecret: file.plaidSecret || process.env.PLAID_SECRET || "",
     plaidEnv: file.plaidEnv || process.env.PLAID_ENV || "production",
@@ -65,7 +71,7 @@ function buildConfig(): RayConfig {
 export const config = buildConfig();
 
 export function isConfigured(): boolean {
-  return !!config.anthropicKey || !!config.rayApiKey;
+  return !!config.anthropicKey || !!config.rayApiKey || !!config.openaiCompatibleKey;
 }
 
 export function saveConfig(partial: Partial<RayConfig>): void {
