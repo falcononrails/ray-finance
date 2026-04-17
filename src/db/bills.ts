@@ -1,4 +1,5 @@
 import type Database from "libsql";
+import { formatCurrencyAmount } from "../currency.js";
 
 export type BillSource = "card" | "recurring" | "manual";
 
@@ -175,5 +176,5 @@ function nextDayOfMonthDate(today: Date, dayOfMonth: number): Date {
 }
 
 function formatShortMoney(n: number): string {
-  return `$${Math.round(n).toLocaleString()}`;
+  return formatCurrencyAmount(Math.round(n), { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 }

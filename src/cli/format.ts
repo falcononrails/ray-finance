@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import { formatCurrencyAmount, formatDisplayCount } from "../currency.js";
 
 // ─── Color Palette ─── //
 
@@ -29,7 +30,7 @@ export function formatDuration(ms: number): string {
 }
 
 export function formatCount(n: number): string {
-  return n.toLocaleString();
+  return formatDisplayCount(n);
 }
 
 // ─── Error Display ─── //
@@ -61,8 +62,7 @@ export function formatError(error: any, context?: string): string {
 // ─── Money Formatting ─── //
 
 export function formatMoney(n: number): string {
-  const abs = Math.abs(n);
-  const formatted = "$" + abs.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const formatted = formatCurrencyAmount(Math.abs(n), { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   if (n < 0) return chalk.red("-" + formatted);
   return formatted;
 }
@@ -217,8 +217,8 @@ export function formatResponse(text: string): string {
       // Bold: **text**
       line = line.replace(/\*\*(.+?)\*\*/g, (_, t) => chalk.bold(t));
 
-      // Money amounts: $1,234 or $1,234.56 or -$500
-      line = line.replace(/-?\$[\d,]+(?:\.\d{1,2})?/g, (m) => {
+      // Money amounts with common symbols, prefix or suffix (e.g. $12.3, -€20, 1 200 €)
+      line = line.replace(/-?(?:[$€£]\s?\d[\d.,\s]*|\d[\d.,\s]*\s?[$€£])/g, (m) => {
         return m.startsWith("-") ? chalk.red(m) : chalk.green(m);
       });
 

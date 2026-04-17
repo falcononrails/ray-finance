@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import { config } from "../config.js";
 import { banner } from "./format.js";
+import { formatDisplayDate } from "../currency.js";
 
 /**
  * Pre-mount orchestration: banner, briefing, account check + optional runLink,
@@ -20,7 +21,7 @@ export async function startChat(): Promise<void> {
   const briefing = cliBriefing(db);
   if (briefing) {
     const now = new Date();
-    const timeStr = now.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric" }).toLowerCase();
+    const timeStr = formatDisplayDate(now, { weekday: "long", month: "short", day: "numeric" }).toLowerCase();
     console.log(chalk.dim(`  ${timeStr}`));
     console.log("");
     console.log(briefing);

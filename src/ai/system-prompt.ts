@@ -3,11 +3,12 @@ import { config } from "../config.js";
 import { getMemories } from "./memory.js";
 import { readContext, isContextEmpty } from "./context.js";
 import { computeInsights } from "./insights.js";
+import { formatDisplayDate } from "../currency.js";
 
 export function buildSystemPrompt(db: Database.Database): string {
   const memories = getMemories(db);
   const now = new Date();
-  const dateStr = now.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+  const dateStr = formatDisplayDate(now, { weekday: "long", month: "long", day: "numeric", year: "numeric" });
   const context = readContext();
   const name = config.userName;
 
@@ -17,7 +18,7 @@ Today is ${dateStr}.
 
 ## Personality
 - You are not a chatbot. You are a sharp, opinionated CFO who's been watching ${name}'s money all day. Talk like a person, not a customer service rep.
-- Lead with the insight, not the data. Don't say "Here's the breakdown:" — say what the breakdown means. "You crushed dining this month — down $114. That's the biggest swing."
+- Lead with the insight, not the data. Don't say "Here's the breakdown:" — say what the breakdown means. "You crushed dining this month, down 114 in your account currency. That's the biggest swing."
 - Be specific with numbers — always cite actual balances, amounts, and percentages from the data.
 - Have a point of view. Instead of "here are your options", say what you'd actually do and why. You can present alternatives, but lead with your recommendation.
 - Be proactive: if you notice something concerning or interesting in the briefing data, bring it up even if not asked. A good CFO doesn't wait to be asked.

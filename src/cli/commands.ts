@@ -13,6 +13,7 @@ import { startLinkServer } from "../server.js";
 import { addManualAccount, getManualAccounts, removeManualAccount, scrapeRedfinEstimate } from "../property.js";
 import { heading, progressBar, formatMoney, formatMoneyColored, padColumns, dim, formatDuration, formatError, renderLogo, institutionName } from "./format.js";
 import { getUpcomingBills } from "../db/bills.js";
+import { formatDisplayDate } from "../currency.js";
 
 export async function runSync(): Promise<void> {
   const ora = (await import("ora")).default;
@@ -510,7 +511,7 @@ export function showBills(days = 7): void {
   let total = 0;
 
   for (const b of bills) {
-    const dateStr = b.date.toLocaleDateString("en-US", {
+    const dateStr = formatDisplayDate(b.date, {
       month: "short", day: "numeric", timeZone: "UTC",
     });
     const amountStr = rawFormatMoney(b.amount);
@@ -538,7 +539,7 @@ export function showRecap(period = "last_month"): void {
   if (period === "this_month") {
     start = new Date(y, m, 1).toISOString().slice(0, 10);
     end = now.toISOString().slice(0, 10);
-    label = now.toLocaleDateString("en-US", { month: "long", year: "numeric" }) + " (so far)";
+    label = formatDisplayDate(now, { month: "long", year: "numeric" }) + " (so far)";
     prevStart = new Date(y, m - 1, 1).toISOString().slice(0, 10);
     prevEnd = new Date(y, m, 0).toISOString().slice(0, 10);
   } else {
@@ -546,7 +547,7 @@ export function showRecap(period = "last_month"): void {
     start = new Date(y, m - 1, 1).toISOString().slice(0, 10);
     end = new Date(y, m, 0).toISOString().slice(0, 10);
     const lastMonth = new Date(y, m - 1, 1);
-    label = lastMonth.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    label = formatDisplayDate(lastMonth, { month: "long", year: "numeric" });
     prevStart = new Date(y, m - 2, 1).toISOString().slice(0, 10);
     prevEnd = new Date(y, m - 1, 0).toISOString().slice(0, 10);
   }

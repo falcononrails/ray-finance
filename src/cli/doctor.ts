@@ -5,6 +5,7 @@ import { resolve } from "path";
 import chalk from "chalk";
 import { config, getConfigPath, isConfigured, useManaged } from "../config.js";
 import { padColumns, colors } from "./format.js";
+import { formatDisplayCount } from "../currency.js";
 
 interface Check {
   label: string;
@@ -115,7 +116,7 @@ export async function runDoctor(): Promise<void> {
         checks.push({ label: "Database", status: "warn", detail: `Missing tables: ${missing.join(", ")}` });
       } else {
         const count = (db.prepare("SELECT COUNT(*) as n FROM transactions").get() as { n: number }).n;
-        checks.push({ label: "Database", status: "ok", detail: `${count.toLocaleString()} transactions, ${tableNames.length} tables` });
+        checks.push({ label: "Database", status: "ok", detail: `${formatDisplayCount(count)} transactions, ${tableNames.length} tables` });
       }
     } catch (err: any) {
       checks.push({ label: "Database", status: "fail", detail: err.message?.slice(0, 80) || "Cannot open" });

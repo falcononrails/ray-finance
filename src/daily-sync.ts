@@ -15,6 +15,7 @@ import { decryptPlaidToken } from "./db/encryption.js";
 import { config } from "./config.js";
 import { institutionName } from "./cli/format.js";
 import { refreshPropertyValues, hasListingUrls } from "./property.js";
+import { formatCurrencyAmount } from "./currency.js";
 
 export interface SyncResult {
   transactionsAdded: number;
@@ -177,7 +178,9 @@ export async function runDailySync(
   ).run(today, assets.total, liabs.total, netWorth);
 
   logger.log(
-    `Net worth snapshot: $${netWorth.toLocaleString()} (assets: $${assets.total.toLocaleString()}, liabilities: $${liabs.total.toLocaleString()})`
+    `Net worth snapshot: ${formatCurrencyAmount(netWorth, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` +
+    ` (assets: ${formatCurrencyAmount(assets.total, { minimumFractionDigits: 2, maximumFractionDigits: 2 })},` +
+    ` liabilities: ${formatCurrencyAmount(liabs.total, { minimumFractionDigits: 2, maximumFractionDigits: 2 })})`
   );
 
   // Calculate daily score for yesterday

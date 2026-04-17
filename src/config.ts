@@ -10,6 +10,8 @@ export interface RayConfig {
   providerType: "anthropic" | "openai-compatible";
   openaiCompatibleKey: string;
   openaiCompatibleBaseURL: string;
+  displayLocale: string;
+  displayCurrency: string;
   plaidClientId: string;
   plaidSecret: string;
   plaidEnv: string;
@@ -45,8 +47,37 @@ function loadFileConfig(): Partial<RayConfig> {
   }
 }
 
+function inferCurrencyFromLocale(locale: string): string {
+  const region = locale.split("-")[1]?.toUpperCase();
+  if (!region) return "USD";
+
+  if ([
+    "AT", "BE", "CY", "DE", "EE", "ES", "FI", "FR", "GR", "HR", "IE",
+    "IT", "LT", "LU", "LV", "MT", "NL", "PT", "SI", "SK",
+  ].includes(region)) {
+    return "EUR";
+  }
+
+  const map: Record<string, string> = {
+    US: "USD",
+    GB: "GBP",
+    CH: "CHF",
+    CA: "CAD",
+    AU: "AUD",
+    JP: "JPY",
+  };
+
+  return map[region] || "USD";
+}
+
 function buildConfig(): RayConfig {
   const file = loadFileConfig();
+  const displayLocale =
+    file.displayLocale ||
+    process.env.RAY_DISPLAY_LOCALE ||
+    Intl.DateTimeFormat().resolvedOptions().locale ||
+    "en-US";
+
   return {
     anthropicKey: file.anthropicKey || process.env.ANTHROPIC_API_KEY || "",
     rayApiKey: file.rayApiKey || process.env.RAY_API_KEY || "",
@@ -54,6 +85,11 @@ function buildConfig(): RayConfig {
     providerType: file.providerType || (process.env.RAY_PROVIDER as any) || "anthropic",
     openaiCompatibleKey: file.openaiCompatibleKey || process.env.OPENAI_COMPATIBLE_KEY || "",
     openaiCompatibleBaseURL: file.openaiCompatibleBaseURL || process.env.OPENAI_COMPATIBLE_BASE_URL || "",
+    displayLocale,
+    displayCurrency:
+      file.displayCurrency ||
+      process.env.RAY_DISPLAY_CURRENCY ||
+      inferCurrencyFromLocale(displayLocale),
     plaidClientId: file.plaidClientId || process.env.PLAID_CLIENT_ID || "",
     plaidSecret: file.plaidSecret || process.env.PLAID_SECRET || "",
     plaidEnv: file.plaidEnv || process.env.PLAID_ENV || "production",

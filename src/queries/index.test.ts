@@ -21,6 +21,7 @@ import {
   getIncome,
   INCOME_EXCLUDED_CATEGORIES,
 } from "./index.js";
+import { formatCurrencyAmount } from "../currency.js";
 
 type DB = InstanceType<typeof Database>;
 
@@ -60,9 +61,12 @@ function daysAgo(n: number): string {
 // ─── Pure functions ───
 
 describe("formatMoney", () => {
-  it("formats positive", () => expect(formatMoney(1234.5)).toBe("$1,234.50"));
-  it("formats negative as absolute", () => expect(formatMoney(-99)).toBe("$99.00"));
-  it("formats zero", () => expect(formatMoney(0)).toBe("$0.00"));
+  it("formats positive", () =>
+    expect(formatMoney(1234.5)).toBe(formatCurrencyAmount(1234.5, { minimumFractionDigits: 2, maximumFractionDigits: 2 })));
+  it("formats negative as absolute", () =>
+    expect(formatMoney(-99)).toBe(formatCurrencyAmount(99, { minimumFractionDigits: 2, maximumFractionDigits: 2 })));
+  it("formats zero", () =>
+    expect(formatMoney(0)).toBe(formatCurrencyAmount(0, { minimumFractionDigits: 2, maximumFractionDigits: 2 })));
 });
 
 describe("categoryLabel", () => {
